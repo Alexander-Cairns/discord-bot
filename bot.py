@@ -49,7 +49,8 @@ async def on_message(message):
     if message.author == client.user:
         return
     if message.author.id == 435476534619537448:
-        await  message.channel.send('@cew644 GOT TO BED')
+    # if message.author.id == 468602065757798420:
+            await  message.channel.send(f'@{message.author} GO TO BED')
     if message.content == '!hello':
         await message.channel.send('Hello, World!')
     if message.content == '!covid update':

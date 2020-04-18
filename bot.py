@@ -41,12 +41,15 @@ def parse_x(key, tree, paths):
 async def on_ready():
     for guild in client.guilds:
         print(f'Guild: {guild.name}, {guild.id}')
+        print(guild.members)
 
 
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
+    if message.author.id == 435476534619537448:
+        await  message.channel.send('@cew644 GOT TO BED')
     if message.content == '!hello':
         await message.channel.send('Hello, World!')
     if message.content == '!covid update':
@@ -60,7 +63,8 @@ async def on_message(message):
     if message.content.startswith('!roll'):
         resp = dice.discord_dice(message.content)
         await message.channel.send(resp)
-    if randint(1, 100) == 1 or message.guild.name == 'Marky Mark and the Funky Bunch':
+    if randint(1, 100) == 1 \
+            or message.guild.name == 'Marky Mark and the Funky Bunch':
         await message.channel.send(landmine.death(message.content))
 
 

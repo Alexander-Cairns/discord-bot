@@ -26,7 +26,6 @@ def parse(text):
         add = 0
         num = 1
         die = 0
-        print(roll)
         for child in roll.children:
             if child.data == 'num':
                 num = int(child.children[0])

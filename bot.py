@@ -9,6 +9,7 @@ import os
 
 import landmine
 import dice
+import sleep
 
 client = discord.Client()
 
@@ -69,8 +70,14 @@ async def on_message(message):
         await message.channel.send(landmine.death(message.content))
     if message.content.lower().startswith('!x'):
         await message.channel.send('```json\n{\n  "X": "JASON!!!!!"\n}\n```')
+    if message.content.lower().startswith('!go to sleep'):
+        sleepCommand.add_sleeper(message)
+    if message.content.lower().startswith('!stop sleep'):
+        sleepCommand.remove_sleeper(message)
+    await sleepCommand.go_to_sleep(message)
 
 
 if __name__ == '__main__':
     TOKEN = os.environ['DISCORD_BOT_TOKEN']
+    sleepCommand = sleep.Sleep()
     client.run(TOKEN)

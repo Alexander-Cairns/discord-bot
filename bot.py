@@ -15,7 +15,8 @@ client = discord.Client()
 
 def get_covid_stats(location="PEI"):
     if location == 'PEI':
-        page = requests.get('https://www.princeedwardisland.ca/en/topic/covid-19').content
+        page = requests.get(
+                'https://www.princeedwardisland.ca/en/topic/covid-19').content
         x_paths = {
             'cases': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[1]/text()',
             'negative': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[2]/text()',
@@ -41,7 +42,6 @@ def parse_x(key, tree, paths):
 async def on_ready():
     for guild in client.guilds:
         print(f'Guild: {guild.name}, {guild.id}')
-        print(guild.members)
 
 
 @client.event
@@ -50,7 +50,7 @@ async def on_message(message):
         return
     # if message.author.id == 435476534619537448:
     # if message.author.id == 468602065757798420:
-            # await  message.channel.send(f'@{message.author} GO TO BED')
+    # await  message.channel.send(f'@{message.author} GO TO BED')
     if message.content == '!hello':
         await message.channel.send('Hello, World!')
     if message.content == '!covid update':
@@ -67,6 +67,8 @@ async def on_message(message):
     if randint(1, 100) == 1 \
             or message.guild.name == 'Marky Mark and the Funky Bunch':
         await message.channel.send(landmine.death(message.content))
+    if message.content.lower().startswith('!x'):
+        await message.channel.send('```json\n{\n  "X": "JASON!!!!!"\n}\n```')
 
 
 if __name__ == '__main__':

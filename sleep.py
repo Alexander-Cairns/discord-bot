@@ -11,7 +11,8 @@ class Sleep():
 
     def remove_sleeper(self, message):
         for mention in message.mentions:
-            self.sleepers.remove(mention)
+            if message.author != mention:
+                self.sleepers.remove(mention)
 
     async def go_to_sleep(self, message):
         if message.author in self.sleepers:

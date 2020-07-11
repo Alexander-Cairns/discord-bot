@@ -19,10 +19,10 @@ def get_covid_stats(location="PEI"):
         page = requests.get(
                 'https://www.princeedwardisland.ca/en/topic/covid-19').content
         x_paths = {
-            'cases': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[1]/text()',
-            'negative': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[2]/text()',
-            'pending': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[3]/text()',
-            'recovered': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/table/tbody/tr[3]/td[4]/text()'
+            'cases': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/table/tbody/tr[3]/td[1]/text()',
+            'negative': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/table/tbody/tr[3]/td[2]/text()',
+            'pending': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/table/tbody/tr[3]/td[3]/text()',
+            'recovered': '/html/body/div[2]/main/section/div/section/div/div/div[2]/div[1]/div[1]/div/div/div/div/div/div/div[1]/table/tbody/tr[3]/td[4]/text()'
         }
     tree = html.fromstring(page)
     stats = {

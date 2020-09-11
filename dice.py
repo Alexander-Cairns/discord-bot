@@ -1,12 +1,30 @@
 from random import randint
-
+from discord.ext import commands
 from lark import Lark
 
+class Dice(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command()
+    async def roll(self,ctx, *,arg):
+        rolls = parse(arg)
+        resp = f'{ctx.author.mention}\n'
+        for num, die, adv, add in rolls:
+
+            total, sub_rolls = get_rolls(num, die, adv, add)
+            if num > 1:
+                resp += f'{num}d{die}: {total}, {sub_rolls}\n'
+            else:
+                resp += f'{num}d{die}: {total}\n'
+                if adv != 0:
+                    resp += f' {sub_rolls[0]}\n'
+        await  ctx.send(resp)
 
 def parse(text):
     print(text)
     parser = Lark(r"""
-    rolls: "!roll" roll+ 
+    rolls: roll+ 
     roll: [num] "d" die mod*
     num: SIGNED_NUMBER
     die: SIGNED_NUMBER
@@ -48,21 +66,6 @@ def parse(text):
     return rolls
 
 
-def discord_dice(message):
-    rolls = parse(message)
-    resp = ''
-    for num, die, adv, add in rolls:
-
-        total, sub_rolls = get_rolls(num, die, adv, add)
-        if num > 1:
-            resp += f'{num}d{die}: {total}, {sub_rolls}\n'
-        else:
-            resp += f'{num}d{die}: {total}'
-            if adv != 0:
-                resp += f' {sub_rolls[0]}\n'
-    return resp
-
-
 def get_rolls(num, sides, adv, add):
     total = 0
     rolls = []
@@ -85,6 +88,3 @@ def get_rolls(num, sides, adv, add):
         total = f'{total + add} ({total} - {-add})'
     return total, rolls
 
-
-if __name__ == '__main__':
-    print(discord_dice('!roll 2d 6 adv 3d4 +1'))

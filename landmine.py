@@ -1,3 +1,48 @@
+from random import randint
+
+from discord.ext import commands
+
+
+class Landmine(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.armed = {}
+        self.chance = {}
+
+    @commands.command()
+    async def arm(self, ctx, chance=0):
+        if self.armed[ctx.guild]:
+            await ctx.send('Landmines already armed!')
+            return
+        self.armed[ctx.guild] = True
+        self.chance[ctx.guild] = chance
+        await ctx.message.delete()
+        await ctx.send('Tread carefully')
+
+    @commands.command()
+    async def disarm(self,ctx):
+        self.armed[ctx.guild] = False
+        await ctx.message.delete()
+        await ctx.send('All clear')
+
+
+    @commands.Cog.listener()
+    async def on_guild_available(self, guild):
+        self.armed[guild] = False
+        self.chance[guild] = 0
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.guild is None:
+            return
+        if not self.armed[message.guild]:
+            return
+        if randint(0, self.chance[message.guild]) == 0:
+            resp = death(message.content)
+            if resp is not None:
+                await message.channel.send(resp)
+
+
 def death(message_text):
     message_text = message_text.lower()
     if 'why so serious' in message_text:
@@ -70,7 +115,8 @@ def death(message_text):
     if 'wrong' in message_text:
         return ('https://img.fireden.net/v/image/1471/66/1471661572443.gif')
     if 'hope' in message_text:
-        return ('http://pa1.narvii.com/5664/d09cbe696e3316649aa375f17ef9c483a70ff33b_00.gif ')
+        return (
+            'http://pa1.narvii.com/5664/d09cbe696e3316649aa375f17ef9c483a70ff33b_00.gif ')
     if 'Raine' in message_text:
         return (
             'https://68.media.tumblr.com/2174627e228d6999ce8f29e8b7c75f7a/tumblr_oqvi1cV78l1tpri36o1_400.gif')

@@ -7,6 +7,7 @@ from help import Help
 from hello import Hello
 from landmine import Landmine
 from sleep import Sleep
+from tex import Tex
 from x import X
 
 bot = Bot(command_prefix='$')
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     bot.add_cog(Dice(bot))
     bot.add_cog(Landmine(bot))
     bot.add_cog(Sleep(bot))
+    bot.add_cog(Tex(bot))
 
     TOKEN = os.environ['DISCORD_BOT_TOKEN']
     # sleepCommand = sleep.Sleep()

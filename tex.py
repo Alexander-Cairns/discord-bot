@@ -2,31 +2,8 @@ import os
 import re
 
 import discord
+import requests as requests
 from discord.ext import commands
-from pylatex import Document, Command, TextColor
-from pylatex.utils import NoEscape
-
-
-def img_from_latex(title, text, dark=True):
-    background = '#36393E' if dark else 'white'
-    textcolour = 'white' if dark else 'black'
-    doc = Document(title)
-    doc.documentclass = Command(
-        'documentclass',
-        options=['border=5pt'],
-        arguments=['standalone'],
-    )
-    doc.append(TextColor(textcolour, NoEscape(text)))
-
-    try:
-        doc.generate_pdf(clean_tex=False)
-    except:
-        img_from_latex(title,'Please provide proper \LaTeX',dark)
-        return
-
-
-    os.system(
-        f'convert -density 300 {title}.pdf -background "{background}" -flatten -quality 90 {title}.png')
 
 
 class Tex(commands.Cog):
@@ -36,38 +13,31 @@ class Tex(commands.Cog):
 
     @commands.command()
     async def texl(self, ctx, *, arg=None):
-        title = f'tex/{ctx.message.id}'
-        img_from_latex(title, arg, dark=False)
-        with open(f'{title}.png', 'rb') as fp:
-            sent = await ctx.send(file=discord.File(fp, 'new_filename.png'))
-            self.messages[ctx.message.id] = sent
-            os.system(f'rm {title}*')
+        resp = requests.get(f'https://latex.codecogs.com/png.latex?%5Chuge%20{arg}')
+        await self.send_image(ctx, resp.content, ctx.message)
 
     @commands.command()
     async def tex(self, ctx, *, arg=None):
-        title = f'tex/{ctx.message.id}'
-        img_from_latex(title, arg)
-        with open(f'{title}.png', 'rb') as fp:
-            sent = await ctx.send(file=discord.File(fp, 'new_filename.png'))
-            self.messages[ctx.message.id] = sent
-            os.system(f'rm {title}*')
-
+        resp = requests.get(f'https://latex.codecogs.com/png.latex?%5Cbg_black%20%5Chuge%20{arg}')
+        await self.send_image(ctx, resp.content, ctx.message)
 
     @commands.Cog.listener()
-    async def on_message_edit(self,before,after):
+    async def on_message_edit(self, before, after):
         if before.id in self.messages:
             await self.messages[before.id].delete()
-            arg = re.sub('\$texl? ','',after.content)
-            title = f'tex/{after.id}'
-            img_from_latex(title, arg)
-            with open(f'{title}.png', 'rb') as fp:
-                sent = await after.channel.send(file=discord.File(fp, 'new_filename.png'))
-                self.messages[after.id] = sent
-                os.system(f'rm {title}*')
+            arg = re.sub('\$texl? ', '', after.content)
+            if after.content.startswith('$texl'):
+                resp = requests.get(f'https://latex.codecogs.com/png.latex?%5Chuge%20{arg}')
+            else:
+                resp = requests.get(f'https://latex.codecogs.com/png.latex?%5Cbg_black%20%5Chuge%20{arg}')
+            await self.send_image(after.channel, resp.content, after)
             self.messages.pop(before.id)
 
-
-
-
-if __name__ == '__main__':
-    img_from_latex('tex/test', '$x^4$')
+    async def send_image(self, target, image_data, source):
+        image_name = f'tex/{source.id}.png'
+        with open(image_name, 'wb') as file:
+            file.write(image_data)
+        with open(image_name, 'rb') as file:
+            sent = await target.send(file=discord.File(file, 'new_filename.png'))
+            self.messages[source.id] = sent
+            os.system(image_name)

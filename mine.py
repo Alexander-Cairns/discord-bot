@@ -11,6 +11,7 @@ class Mine(commands.Cog):
         self.short_delay = 300
         self.servers = {}
         self.add_server('cezarlinux.net', 762491809157873694, contact=468602065757798420)
+        # self.add_server('cezarlinux.net', 700724407529898085, contact=468602065757798420)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -74,8 +75,9 @@ class Mine(commands.Cog):
 
     def get_players(self, players):
         out = f'Online: {players["online"]}\n'
-        for player in players['list']:
-            out += f'  {player}\n'
+        if players['online'] > 0:
+            for player in players['list']:
+                out += f'  {player}\n'
         return out
 
 

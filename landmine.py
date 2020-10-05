@@ -57,8 +57,6 @@ def death(message_text):
         return ('http://gph.is/1mW3fo3')
     if 'well geez' in message_text:
         return ('http://gph.is/1SS5W9F')
-    if 'no' in message_text:
-        return ('http://gph.is/13XuCEx')
     if 'yes' in message_text:
         return ('http://gph.is/2x52Egn')
     if 'aww yeah' in message_text:

@@ -27,7 +27,7 @@ class Mine(commands.Cog):
             new_status = self.get_server_status(addr)
             self.servers[addr]['status'] = new_status
             if old_status != new_status:
-            # if True:
+                # if True:
                 await self.send_status_message(addr)
 
     def get_server_status(self, address):
@@ -51,15 +51,18 @@ class Mine(commands.Cog):
         print(status)
         emb = discord.Embed()
         emb.title = addr
-        emb.add_field(name='Status', value='online' if status['online'] else 'offline')
+
+        if not status['online']:
+            emb.color = Color.red()
+            emb.add_field(name='Status', value='offline')
+            return emb
+
+        emb.color = Color.green()
+        emb.add_field(name='Status', value='online')
         emb.add_field(name='MOTD', value=status['motd']['clean'][0])
         emb.add_field(name='Players', value=self.get_players(status['players']), inline=True)
 
         emb.add_field(name='Version', value=f'{status["version"]}({status["software"]})')
-        if status['online']:
-            emb.color = Color.green()
-        else:
-            emb.color = Color.red()
 
         return emb
 

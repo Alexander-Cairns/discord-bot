@@ -1,8 +1,9 @@
-import requests
+import asyncio
+
+import discord
 from discord import Color
 from discord.ext import commands
-import discord
-import asyncio
+from mcstatus import MinecraftServer
 
 
 class Mine(commands.Cog):
@@ -11,7 +12,7 @@ class Mine(commands.Cog):
         self.short_delay = 300
         self.servers = {}
         self.add_server('cezarlinux.net', 762491809157873694, contact=468602065757798420)
-        # self.add_server('cezarlinux.net', 700724407529898085, contact=468602065757798420)
+        # self.add_server('mine.doge.irish', 700724407529898085, contact=468602065757798420)
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -32,20 +33,33 @@ class Mine(commands.Cog):
                 await self.send_status_message(addr)
 
     def get_server_status(self, address):
-        API_URL = 'https://api.mcsrvstat.us/2/'
-        resp = requests.get(API_URL + address)
-        if resp.status_code != 200:
-            raise IOError('Could not access api')
-        status = resp.json()
-        del status['debug']
-        return status
+        server = MinecraftServer.lookup(address)
+        try:
+            status = server.status()
+            status_dict = {'online': True,
+                           'motd': {'clean': [m['text'] for m in status.description['extra']]},
+                           'players': {
+                               'online': status.players.online,
+                               'max': status.players.max,
+                               'list': [p.name for p in status.players.sample]
+                           },
+                           'hostname': server.host,
+                           'port': server.port,
+                           'software': status.version.name.split(' ')[0],
+                           'version': ' '.join(status.version.name.split(' ')[1:]),
+                           'protocol': status.version.protocol
+                           }
+            return status_dict
+        except ConnectionError as e:
+            return {'online': False, }
 
     async def send_status_message(self, addr):
         channel: discord.TextChannel = self.bot.get_channel(self.servers[addr]['channel_id'])
         await channel.send(embed=self.create_status_message(addr))
         if not self.servers[addr]['status']['online']:
             contact = self.bot.get_user(self.servers[addr]['emerge_contact'])
-            await  channel.send(contact.mention)
+            print(contact)
+            await channel.send(contact.mention)
 
     def create_status_message(self, addr):
         status = self.servers[addr]['status']
@@ -82,4 +96,4 @@ class Mine(commands.Cog):
 
 
 if __name__ == '__main__':
-    Mine(None)
+    pass

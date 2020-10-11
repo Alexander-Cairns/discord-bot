@@ -9,7 +9,7 @@ from mcstatus import MinecraftServer
 class Mine(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.short_delay = 300
+        self.short_delay = 30
         self.servers = {}
         self.add_server('cezarlinux.net', 762491809157873694, contact=468602065757798420)
         # self.add_server('mine.doge.irish', 700724407529898085, contact=468602065757798420)
@@ -29,7 +29,6 @@ class Mine(commands.Cog):
             new_status = self.get_server_status(addr)
             self.servers[addr]['status'] = new_status
             if old_status != new_status:
-                # if True:
                 await self.send_status_message(addr)
 
     def get_server_status(self, address):
@@ -41,7 +40,7 @@ class Mine(commands.Cog):
                            'players': {
                                'online': status.players.online,
                                'max': status.players.max,
-                               'list': [p.name for p in status.players.sample]
+                               'list': [p.name for p in status.players.sample] if status.players.online > 0 else []
                            },
                            'hostname': server.host,
                            'port': server.port,

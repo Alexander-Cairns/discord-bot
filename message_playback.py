@@ -1,9 +1,15 @@
+import json
+
 from discord.ext import commands
 
 
 class MessagePlayback(commands.Cog):
     def __init__(self, bot):
-        self.messages = {}
+        try:
+            with open('config/message_playback.json', 'r') as config:
+                self.messages = json.load(config)
+        except:
+            self.messages = {}
 
     @commands.group(aliases=['mp'])
     async def message_playback(self, ctx):
@@ -20,8 +26,9 @@ class MessagePlayback(commands.Cog):
         message = arg[space + 1:]
         self.add_message(list_name, message)
         await ctx.send(f'{ctx.author.mention} I added \n > {message}\n to the list **{list_name}**')
+        self.save()
 
-    @message_playback.command(aliases=['ls','l'])
+    @message_playback.command(aliases=['ls', 'l'])
     async def list(self, ctx, list_name=None):
         if list_name is None:
             if len(self.messages) == 0:
@@ -46,7 +53,7 @@ class MessagePlayback(commands.Cog):
             for message in self.messages[list_name]:
                 await ctx.send(message)
 
-    @message_playback.command(aliases=['rm','r'])
+    @message_playback.command(aliases=['rm', 'r'])
     async def remove(self, ctx, list_name=None, index=-1):
         if list_name is None:
             await ctx.send('This is not good')
@@ -57,16 +64,20 @@ class MessagePlayback(commands.Cog):
         if index == -1:
             del self.messages[list_name]
             await ctx.send(f'Removed the list **{list_name}**.')
+            self.save()
         else:
-            message =  self.messages[list_name][index]
+            message = self.messages[list_name][index]
             del self.messages[list_name][index]
             if len(self.messages[list_name]) == 0:
                 del self.messages[list_name]
             await ctx.send(f'Removed the message: \n> {message}\n from  the list **{list_name}**.')
-
-
+            self.save()
 
     def add_message(self, list_name, message):
         if list_name not in self.messages:
             self.messages[list_name] = []
         self.messages[list_name].append(message)
+
+    def save(self):
+        with open('config/message_playback.json', 'w') as config:
+            config.write(json.dumps(self.messages, indent=2))

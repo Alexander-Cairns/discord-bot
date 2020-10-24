@@ -14,6 +14,7 @@ class Mine(commands.Cog):
         self.add_server('cezarlinux.net', 762491809157873694, contact=468602065757798420)
         # self.add_server('mine.doge.irish', 700724407529898085, contact=468602065757798420)
 
+
     @commands.Cog.listener()
     async def on_ready(self):
         await self.watch_for_change()
@@ -49,7 +50,7 @@ class Mine(commands.Cog):
                            'protocol': status.version.protocol
                            }
             return status_dict
-        except ConnectionError as e:
+        except:
             return {'online': False, }
 
     async def send_status_message(self, addr):

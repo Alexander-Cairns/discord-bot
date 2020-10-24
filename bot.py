@@ -6,6 +6,7 @@ from dice import Dice
 from help import Help
 from hello import Hello
 from landmine import Landmine
+from message_playback import MessagePlayback
 from mine import Mine
 from sleep import Sleep
 from tex import Tex
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     bot.add_cog(Sleep(bot))
     bot.add_cog(Tex(bot))
     bot.add_cog(Mine(bot))
+    bot.add_cog((MessagePlayback(bot)))
 
     TOKEN = os.environ['DISCORD_BOT_TOKEN']
     # sleepCommand = sleep.Sleep()

@@ -1,4 +1,5 @@
 import asyncio
+import json
 
 import discord
 from discord import Color
@@ -10,10 +11,28 @@ class Mine(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.short_delay = 30
-        self.servers = {}
-        self.add_server('cezarlinux.net', 762491809157873694, contact=468602065757798420)
-        # self.add_server('mine.doge.irish', 700724407529898085, contact=468602065757798420)
+        self.config_file = 'minecraft_servers.json'
+        try:
+            with open(f'config/{self.config_file}', 'r') as config:
+                self.servers = json.load(config)
+        except:
+            self.servers = {}
 
+    @commands.group()
+    async def mc(self, ctx):
+        if ctx.invoked_subcommand is None:
+            ctx.send('This is no good')
+
+    @mc.command(aliases=['a'])
+    async def add(self, ctx, server=None):
+        if server is None:
+            await ctx.send('This is no good')
+            return
+
+        msg = ctx.message
+        contact = msg.mentions[0].id if len(msg.mentions) > 0 else None
+        self.add_server(server, ctx.channel.id, contact=contact)
+        await ctx.send(f'Now monitoring {server}')
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -58,8 +77,8 @@ class Mine(commands.Cog):
         await channel.send(embed=self.create_status_message(addr))
         if not self.servers[addr]['status']['online']:
             contact = self.bot.get_user(self.servers[addr]['emerge_contact'])
-            print(contact)
-            await channel.send(contact.mention)
+            if contact is not None:
+                await channel.send(contact.mention)
 
     def create_status_message(self, addr):
         status = self.servers[addr]['status']
@@ -81,11 +100,12 @@ class Mine(commands.Cog):
 
         return emb
 
-    def add_server(self, addr, id, contact=None):
+    def add_server(self, addr, channel_id, contact=None):
         self.servers[addr] = {}
         self.servers[addr]['status'] = {}
-        self.servers[addr]['channel_id'] = id
+        self.servers[addr]['channel_id'] = channel_id
         self.servers[addr]['emerge_contact'] = contact
+        self.save()
 
     def get_players(self, players):
         out = f'Online: {players["online"]}\n'
@@ -93,6 +113,10 @@ class Mine(commands.Cog):
             for player in players['list']:
                 out += f'  {player}\n'
         return out
+
+    def save(self):
+        with open(f'config/{self.config_file}', 'w') as config:
+            config.write(json.dumps(self.servers, indent=2))
 
 
 if __name__ == '__main__':

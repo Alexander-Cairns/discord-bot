@@ -11,7 +11,8 @@ from mine import Mine
 from sleep import Sleep
 from tex import Tex
 from x import X
-form doctor import Doctor
+from doctor import Doctor
+from hall_of_fame import HallOfFame
 
 bot = Bot(command_prefix='$')
 
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     bot.add_cog(Mine(bot))
     bot.add_cog((MessagePlayback(bot)))
     bot.add_cog(Doctor(bot))
+    bot.add_cog(HallOfFame(bot))
 
     TOKEN = os.environ['DISCORD_BOT_TOKEN']
     # sleepCommand = sleep.Sleep()

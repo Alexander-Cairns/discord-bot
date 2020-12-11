@@ -39,7 +39,7 @@ class HallOfFame(commands.Cog):
         num_reacts = 0
         for r in message.reactions:
             num_reacts += r.count
-        if num_reacts >= 1 and message.id not in self.config[gid]['messages']:
+        if num_reacts >= 6 and message.id not in self.config[gid]['messages']:
             print(message.attachments)
             resp = ''
             resp+= '>>> '

@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: self-hosted
     environment:
-      name: YOUR_ENVIRONMENT_NAME
+      name: deployment
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9

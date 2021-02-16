@@ -9,9 +9,9 @@ on:
 
 jobs:
   build:
-
     runs-on: self-hosted
-
+    environment:
+      name: YOUR_ENVIRONMENT_NAME
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -22,7 +22,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - shell: bash
+    - name: run
       env: 
         DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       run: |

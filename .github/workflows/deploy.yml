@@ -24,4 +24,4 @@ jobs:
       #env: 
       #DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       run: |
-        gcloud compute ssh --zone "us-east1-b" instance-1 --command "echo test > test"
+        gcloud compute scp --zone "us-east1-b" * instance-1:/opt/discord-bot

@@ -8,7 +8,7 @@ on:
     branches: [ actions ]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -19,10 +19,11 @@ jobs:
         version: '290.0.1'
         service_account_key: ${{ secrets.GCE_SA_KEY }}
         project_id: ${{ secrets.GCE_PROJECT }}
-    - name: ls
+    - name: deploy
       #- name: run
-      #env: 
-      #DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+      env: 
+        GCE_ZONE: us-east1-b
+        GCE_INSTANCE: instance-1
       run: |
-        gcloud compute scp --zone "us-east1-b" * instance-1:/opt/discord-bot
-        gcloud compute ssh --zone "us-east1-b" instance-1 --command="sudo supervisorctl restart discordbot"
+        gcloud compute scp --zone $GCE_ZONE * $GCE_INSTANCE:/opt/discord-bot
+        gcloud compute ssh --zone $GCE_ZONE $GCE_INSTANCE --command="sudo supervisorctl restart discordbot"

@@ -6,4 +6,4 @@ class Help(commands.Cog):
 
     @commands.command()
     async def help(self, ctx):
-        await ctx.send('is easy!')
+        await ctx.send('is eazy!')

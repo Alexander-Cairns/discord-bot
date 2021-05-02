@@ -26,4 +26,4 @@ jobs:
       #run: |
       #gcloud compute scp --zone "us-east1-b" * instance-1:/opt/discord-bot
       run: |
-        echo $UID
+        gcloud compute ssh --zone "us-east1-b" echo $UID

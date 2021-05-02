@@ -25,3 +25,4 @@ jobs:
       #DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
       run: |
         gcloud compute scp --zone "us-east1-b" * instance-1:/opt/discord-bot
+        gcloud compute ssh --zone "us-east1-b" --command "sudo supervisorctl update"

@@ -14,11 +14,14 @@ jobs:
       name: production
     steps:
     - uses: actions/checkout@v2
-    - name: run
-      run: |
-        ls && asdf
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GCE_SA_KEY }}
+        project_id: ${{ secrets.GCE_PROJECT }}
+    - name: ls
+      #- name: run
       #env: 
       #DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-      #run: |
-      #python bot.py
-
+      run: |
+        gcloud compute ssh --zone "us-east1-b" instance-1 --command ls

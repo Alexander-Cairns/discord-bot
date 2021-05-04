@@ -38,7 +38,7 @@ if __name__ == '__main__':
     bot.add_cog((MessagePlayback(bot)))
     bot.add_cog(Doctor(bot))
     bot.add_cog(HallOfFame(bot))
-    bot.add_cog(Cropped(bot))
+    # bot.add_cog(Cropped(bot))
 
     TOKEN = os.environ['DISCORD_BOT_TOKEN']
     # sleepCommand = sleep.Sleep()
